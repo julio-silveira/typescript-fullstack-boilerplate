@@ -1,0 +1,5 @@
+DB_USER=name
+DB_PASS=password,
+DB_NAME=myDB,
+DB_HOST=localhost,
+DB_PORT=3306,
