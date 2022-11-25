@@ -30,7 +30,7 @@ Tasks.init({
 }, {
   underscored: true,
   sequelize: db,
-  modelName: 'users',
+  modelName: 'tasks',
   timestamps: false,
 })
 

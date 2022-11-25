@@ -6,19 +6,19 @@ module.exports = {
     await queryInterface.bulkInsert(
       'tasks', [
         {
-          userId: 1,
+          user_id: 1,
           title: 'text01',
           description: 'task01',
 
         },
         {
-          userId: 1,
+          user_id: 1,
           title: 'text02',
           description: 'task02',
 
         },
         {
-          userId: 2,
+          user_id: 2,
           title: 'text03',
           description: 'task03',
 
