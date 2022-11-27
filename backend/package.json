@@ -23,6 +23,7 @@
     "typescript": "^4.9.3"
   },
   "dependencies": {
+    "@types/bcrypt": "^5.0.0",
     "@types/restify-errors": "^4.3.4",
     "bcrypt": "^5.1.0",
     "dotenv": "^16.0.3",
