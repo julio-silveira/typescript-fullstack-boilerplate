@@ -1,32 +1,26 @@
 import { Request, Response } from 'express';
 import statusCodes from '../statusCodes';
 import UserService from '../services/users.service';
+import { BadRequestError, UnauthorizedError } from 'restify-errors';
 
 export default class UserControler {
   constructor(private userService = new UserService()) {}
 
-  public getUser = async (req: Request, res: Response) => {
-    const { username } = req.body
+  public userLogin = async (req: Request, res: Response) => {
+    const { username, password } =  req.body
+    if(!username || !password) throw new BadRequestError("O nome de usuário/senha não podem estar em vazios")
     const user = await this.userService.getUser(username);
-    res.status(statusCodes.OK).json(user)
+
+    if(!user || user.password !== password ) {
+      throw new BadRequestError('Usuário não existe ou senha inválida')
+    }
+    else{
+    res.status(statusCodes.OK).json({message: 'Login Efetuado com sucesso', user: user.username})}
   }
 
   public createUser = async (req: Request, res: Response) => {
     const { username, password } = req.body
     const user = await this.userService.createUser({username, password});
     res.status(statusCodes.CREATED).json(user)
-  }
-
-  public updateUser = async (req: Request, res:Response) =>{
-    const id = Number(req.params.id);
-    const user = req.body
-    await this.userService.updateUser(id,user)
-    res.status(statusCodes.NO_CONTENT).end();
-  }
-
-  public removeUser = async (req: Request, res:Response) =>{
-    const id = Number(req.params.id);
-    await this.userService.removeUser(id)
-    res.status(statusCodes.NO_CONTENT).end();
   }
 };

@@ -8,7 +8,6 @@ export default class TaskControler {
 
   public getTasks = async  (req: Request, res: Response) => {
     const userId = Number(req.params.userId)
-    console.log(userId);
     const tasks = await this.taskServices.findAllTasks(userId)
     res.status(statusCodes.OK).json(tasks)
   }

@@ -65,16 +65,11 @@ class TaskServices {
     if (typeof isValidTask === 'string') throw new BadRequestError(isValidTask)
 
     const { id } = await this.findOneTask(userId, taskId);
-    // if(id === null) throw new NotFoundError("Task not found!")
-    const updateTask = this.tasksModel.update({...task}, {where: {id}} )
-
+    this.tasksModel.update({...task}, {where: {id}} )
   }
 
   public async remove(userId: number, taskId: number): Promise<void> {
     const { id } = await this.findOneTask(userId, taskId);
-
-    // if(!id) throw new NotFoundError("User not found!")
-
     this.tasksModel.destroy({where: {id}}) 
   }
 
