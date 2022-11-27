@@ -23,4 +23,10 @@ export default class UserControler {
     await this.userService.updateUser(id,user)
     res.status(statusCodes.NO_CONTENT).end();
   }
-}
+
+  public removeUser = async (req: Request, res:Response) =>{
+    const id = Number(req.params.id);
+    await this.userService.removeUser(id)
+    res.status(statusCodes.NO_CONTENT).end();
+  }
+};

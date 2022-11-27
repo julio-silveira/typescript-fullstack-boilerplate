@@ -72,4 +72,12 @@ export default class UserService {
     const updatedUser = this.usersModel.update({...user}, {where: {id}} )
 
   }
+
+  public async removeUser(id:number): Promise<void> {
+    const userFound = await this.getUserById(id);
+
+    if(!userFound) throw new NotFoundError("User not found!")
+
+    this.usersModel.destroy({where: {id}}) 
+  }
 }
