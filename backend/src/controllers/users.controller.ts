@@ -4,9 +4,8 @@ import UserService from '../services/users.service';
 import { BadRequestError, UnauthorizedError } from 'restify-errors';
 import { hash, compare } from 'bcrypt';
 import jwt from 'jsonwebtoken'
-import * as dotenv from 'dotenv'
+import 'dotenv/config';
 
-dotenv.config()
 const secret = process.env.JWT_SECRET || 'JWT';
 
 export default class UserControler {
@@ -24,11 +23,6 @@ export default class UserControler {
       throw new UnauthorizedError('Usuário não existe ou senha inválida')
     }
     
-    const jwtConfig = {
-      expiresIn: '7d',
-      algorithm: 'HS256',
-    };
-
     const token = jwt.sign({data: {username: username}},secret, {
       expiresIn: '7d',
       algorithm: 'HS256',
