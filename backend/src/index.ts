@@ -1,7 +1,8 @@
 import express, { NextFunction,Request, Response} from 'express';
 import statusCodes from './statusCodes';
 import 'express-async-errors';
-import UserRoutes from './routes/user.routes'
+import UserRoutes from './routes/user.routes';
+import TaskRoutes from './routes/tasks.routes';
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.use(UserRoutes);
+app.use(TaskRoutes)
 
 app.use(( err: Error, req: Request, res: Response, next: NextFunction) =>{
   const {name, message, details } =  err as any;

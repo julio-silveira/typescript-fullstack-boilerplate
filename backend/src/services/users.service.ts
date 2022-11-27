@@ -4,8 +4,7 @@ import { BadRequestError, NotFoundError } from 'restify-errors';
 
 const properties = ['username', 'password',];
 
-
-export default class UserService {
+class UserService {
   public usersModel = Users;
 
   static validateProperties(user: User): [boolean, string | null] {
@@ -81,3 +80,6 @@ export default class UserService {
     this.usersModel.destroy({where: {id}}) 
   }
 }
+
+
+export default UserService;
