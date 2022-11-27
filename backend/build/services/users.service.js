@@ -12,14 +12,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const UserModel_1 = __importDefault(require("./database/models/UserModel"));
-const TaskModel_1 = __importDefault(require("./database/models/TaskModel"));
-(() => __awaiter(void 0, void 0, void 0, function* () {
-    const users = yield UserModel_1.default.findAll({ raw: true });
-    console.table(users);
-    const tasks = yield TaskModel_1.default.findAll({ raw: true });
-    console.table(tasks);
-    const usersWithTasks = yield UserModel_1.default.findAll({ raw: true, include: ['tasks'] });
-    console.table(usersWithTasks);
-    process.exit(0);
-}))();
+const UserModel_1 = __importDefault(require("../database/models/UserModel"));
+class UserService {
+    constructor() {
+        this.usersModel = UserModel_1.default;
+    }
+    getUser(username) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield this.usersModel.findOne({ where: { username }, raw: true });
+            return user;
+        });
+    }
+}
+exports.default = UserService;

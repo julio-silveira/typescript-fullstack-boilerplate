@@ -30,7 +30,7 @@ Tasks.init({
 }, {
     underscored: true,
     sequelize: _1.default,
-    modelName: 'users',
+    modelName: 'tasks',
     timestamps: false,
 });
 UserModel_1.default.hasMany(Tasks);
