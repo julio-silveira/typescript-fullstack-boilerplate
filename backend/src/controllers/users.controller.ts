@@ -1,12 +1,18 @@
 import { Request, Response } from 'express';
 import statusCodes from '../statusCodes';
 import UserService from '../services/users.service';
-import { BadRequestError } from 'restify-errors';
+import { BadRequestError, UnauthorizedError } from 'restify-errors';
 import { hash, compare } from 'bcrypt';
+import jwt from 'jsonwebtoken'
+import * as dotenv from 'dotenv'
+
+dotenv.config()
+const secret = process.env.JWT_SECRET || 'JWT';
 
 export default class UserControler {
   constructor(private userService = new UserService()) {}
 
+  
   public userLogin = async (req: Request, res: Response) => {
     const { username, password } =  req.body
     if(!username || !password) throw new BadRequestError("O nome de usuário/senha não podem estar em vazios")
@@ -15,10 +21,20 @@ export default class UserControler {
     const comparePassword = await compare(password,user.passwordHash);
     
     if(!user || !comparePassword) {
-      throw new BadRequestError('Usuário não existe ou senha inválida')
+      throw new UnauthorizedError('Usuário não existe ou senha inválida')
     }
-    else{
-    res.status(statusCodes.OK).json({message: 'Login efetuado com sucesso', user: user.username})}
+    
+    const jwtConfig = {
+      expiresIn: '7d',
+      algorithm: 'HS256',
+    };
+
+    const token = jwt.sign({data: {username: username}},secret, {
+      expiresIn: '7d',
+      algorithm: 'HS256',
+    });
+
+    res.status(statusCodes.OK).json({token})
   }
 
   public createUser = async (req: Request, res: Response) => {

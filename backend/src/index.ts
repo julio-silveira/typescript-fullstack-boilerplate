@@ -28,6 +28,11 @@ app.use(( err: Error, req: Request, res: Response, next: NextFunction) =>{
     case 'ValidationError': 
       res.status(400).json({message: details[0].message})
       break
+    case 'UnauthorizedError':
+      res.status(401).json({message})
+    case 'ForbiddenError':
+      res.status(403).json({message})
+      break
     case 'NotFoundError': 
       res.status(404).json({message})
       break
