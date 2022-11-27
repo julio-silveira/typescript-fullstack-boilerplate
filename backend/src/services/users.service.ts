@@ -2,7 +2,7 @@ import User from '../interfaces/user.interface';
 import Users from '../database/models/UserModel';
 import { BadRequestError, NotFoundError } from 'restify-errors';
 
-const properties = ['username', 'password',];
+const properties = ['username', 'passwordHash',];
 
 class UserService {
   public usersModel = Users;
@@ -42,12 +42,12 @@ class UserService {
 
   public async getUser(username: string): Promise<User> {
     const user = await this.usersModel.findOne({ where: { username }, raw: true});
-    return user as User
+    return user as unknown as User
   }
 
   public async getUserById(id: number): Promise<User> {
     const user = await this.usersModel.findOne({ where: { id }, raw: true});
-    return user as User
+    return user as unknown as User
   }
 
   public async createUser(userData: User): Promise<User> {
@@ -56,29 +56,9 @@ class UserService {
     if (typeof isValidUser === 'string') throw new BadRequestError(isValidUser)
 
     const newUser = await this.usersModel.create({ ...userData });
-    return newUser as User
+    return newUser as  unknown as User
   }
 
-  public async updateUser(id: number, user: User): Promise<void> {
-    const isValidUser= UserService.validationUser(user);
-
-    if (typeof isValidUser === 'string') throw new BadRequestError(isValidUser)
-
-    const userFound = await this.getUserById(id);
-
-    if(!userFound) throw new NotFoundError("User not found!")
-
-    const updatedUser = this.usersModel.update({...user}, {where: {id}} )
-
-  }
-
-  public async removeUser(id:number): Promise<void> {
-    const userFound = await this.getUserById(id);
-
-    if(!userFound) throw new NotFoundError("User not found!")
-
-    this.usersModel.destroy({where: {id}}) 
-  }
 }
 
 

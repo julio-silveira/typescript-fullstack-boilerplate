@@ -18,11 +18,12 @@ Users.init({
     type: STRING(30),
     allowNull: false,
   },
-  password: {
+  passwordHash: {
     type: STRING(30),
     allowNull: false,
   },
 }, {
+  underscored: true,
   sequelize: db,
   modelName: 'users',
   timestamps: false,

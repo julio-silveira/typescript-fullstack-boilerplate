@@ -15,10 +15,10 @@ module.exports = {
         type: Sequelize.STRING,
         field: 'username',
       },
-      password: {
+      passwordHash: {
         allowNull: false,
         type: Sequelize.STRING,
-        field: 'password',
+        field: 'password_hash',
       },
     }))
   },

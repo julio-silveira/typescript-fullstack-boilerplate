@@ -14,14 +14,31 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const statusCodes_1 = __importDefault(require("../statusCodes"));
 const users_service_1 = __importDefault(require("../services/users.service"));
+const restify_errors_1 = require("restify-errors");
+const bcrypt_1 = require("bcrypt");
 class UserControler {
     constructor(userService = new users_service_1.default()) {
         this.userService = userService;
-        this.getUser = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const { username } = req.body;
+        this.userLogin = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const { username, password } = req.body;
+            if (!username || !password)
+                throw new restify_errors_1.BadRequestError("O nome de usuário/senha não podem estar em vazios");
             const user = yield this.userService.getUser(username);
-            res.status(statusCodes_1.default.OK).json(user);
+            const hashedPassword = yield (0, bcrypt_1.hash)(password, 8);
+            if (!user || user.passwordHash !== hashedPassword) {
+                throw new restify_errors_1.BadRequestError('Usuário não existe ou senha inválida');
+            }
+            else {
+                res.status(statusCodes_1.default.OK).json({ message: 'Login Efetuado com sucesso', user: user.username });
+            }
+        });
+        this.createUser = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const { username, password } = req.body;
+            const passwordHash = yield (0, bcrypt_1.hash)(password, 8);
+            const user = yield this.userService.createUser({ username, passwordHash });
+            res.status(statusCodes_1.default.CREATED).json(user);
         });
     }
 }
 exports.default = UserControler;
+;
