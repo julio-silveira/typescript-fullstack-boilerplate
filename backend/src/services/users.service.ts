@@ -1,6 +1,6 @@
 import User from '../interfaces/user.interface';
 import Users from '../database/models/UserModel';
-import { BadRequestError } from 'restify-errors';
+import { BadRequestError, NotFoundError } from 'restify-errors';
 
 const properties = ['username', 'password',];
 
@@ -45,7 +45,12 @@ export default class UserService {
     const user = await this.usersModel.findOne({ where: { username }, raw: true});
     return user as User
   }
-  
+
+  public async getUserById(id: number): Promise<User> {
+    const user = await this.usersModel.findOne({ where: { id }, raw: true});
+    return user as User
+  }
+
   public async createUser(userData: User): Promise<User> {
     const isValidUser = UserService.validationUser(userData);
 
@@ -53,5 +58,18 @@ export default class UserService {
 
     const newUser = await this.usersModel.create({ ...userData });
     return newUser as User
+  }
+
+  public async updateUser(id: number, user: User): Promise<void> {
+    const isValidUser= UserService.validationUser(user);
+
+    if (typeof isValidUser === 'string') throw new BadRequestError(isValidUser)
+
+    const userFound = await this.getUserById(id);
+
+    if(!userFound) throw new NotFoundError("User not found!")
+
+    const updatedUser = this.usersModel.update({...user}, {where: {id}} )
+
   }
 }
