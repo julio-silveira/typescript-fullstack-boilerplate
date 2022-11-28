@@ -5,8 +5,7 @@ const router = Router();
 
 const usersController = new UserControler();
 
-router.get('/users', usersController.userLogin);
-router.post('/users', usersController.createUser)
-// router.put('/users/:id', usersController.updateUser)
+router.post('/users', usersController.userLogin);
+router.post('/users/create', usersController.createUser)
 
 export default router;
