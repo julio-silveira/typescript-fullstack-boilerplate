@@ -2,8 +2,8 @@ import { Router } from 'express';
 import TaskControler from '../controllers/tasks.controller';
 import ValidateJWT from '../auth/validateJWT';
 
-const ALL_TASKS_ROUTE: string = '/users/:userId/tasks'
-const ONE_TASK_ROUTE: string = '/users/:userId/tasks/:taskId'
+const ALL_TASKS_ROUTE = '/users/:userId/tasks'
+const ONE_TASK_ROUTE = '/users/:userId/tasks/:taskId'
 
 const router = Router();
 
