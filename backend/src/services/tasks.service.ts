@@ -15,7 +15,7 @@ class TaskServices {
     }
     return [true, null];
   }
-  
+
   static validateValues(task: Task): [boolean, string | null] {
     const entries = Object.entries(task);
     for (let i = 0; i < entries.length; i += 1) {
@@ -26,15 +26,15 @@ class TaskServices {
     }
     return [true, null];
   }
-  
+
   static validationTask(task: Task): void | string {
     let [valid, property] = TaskServices.validateProperties(task);
-  
+
     if (!valid){
       return `O campo ${property} é obrigatório.`;
     }
     [valid, property] = TaskServices.validateValues(task);
-  
+
     if (!valid) {
       return `O campo ${property} não pode ser nulo ou vazio.`;
     }
@@ -49,7 +49,7 @@ class TaskServices {
     const offset: number =  taskId - ONE
     const task = await this.tasksModel.findOne({where: { userId }, limit: ONE, offset, raw: true})
     if(task === null) throw new NotFoundError("Task not found!")
-    return task as unknown as Task 
+    return task as unknown as Task
   }
 
   public async create(task: Task): Promise<Task> {
@@ -70,9 +70,8 @@ class TaskServices {
 
   public async remove(userId: number, taskId: number): Promise<void> {
     const { id } = await this.findOneTask(userId, taskId);
-    this.tasksModel.destroy({where: {id}}) 
+    this.tasksModel.destroy({where: {id}})
   }
-
 
 }
 

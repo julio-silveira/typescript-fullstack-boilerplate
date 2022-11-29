@@ -22,8 +22,8 @@ export default class TaskControler {
   public create = async (req: Request, res: Response) => {
     const userId = Number(req.params.userId)
     const tasksData = req.body
-    const user = await this.taskServices.create({userId,...tasksData});
-    res.status(statusCodes.CREATED).json(user)
+    await this.taskServices.create({userId,...tasksData});
+    res.status(statusCodes.CREATED).json({message: "Tarefa criada com sucesso!"})
   }
 
   public update = async (req: Request, res:Response) =>{
