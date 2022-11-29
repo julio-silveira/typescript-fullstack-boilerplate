@@ -1,10 +1,14 @@
-import { FetchLoginOutput } from '../@types/fetch'
+import {
+  FetchErrorOutput,
+  FetchLoginOutput,
+  FetchTasksOutput
+} from '../@types/fetch'
 import { ILogin } from '../@types/home'
 import { getToken, getUserId } from './localStorage'
 
 export const loginFetch = async (
   userData: ILogin
-): Promise<FetchLoginOutput | void> => {
+): Promise<FetchLoginOutput | FetchErrorOutput | void> => {
   try {
     const response = await fetch('http://localhost:8000/users', {
       method: 'POST',
@@ -18,10 +22,11 @@ export const loginFetch = async (
   }
 }
 
-export const getTasks = async (): Promise<any> => {
+export const getTasks = async (): Promise<
+  FetchTasksOutput[] | FetchErrorOutput | void
+> => {
   try {
     const userId = getUserId()
-    console.log(userId)
     const token = getToken()
     const response = await fetch(
       `http://localhost:8000/users/${userId}/tasks`,
@@ -31,8 +36,6 @@ export const getTasks = async (): Promise<any> => {
       }
     )
     const data = await response.json()
-    console.log(data)
-
     return data
   } catch (error) {
     console.error(error)
