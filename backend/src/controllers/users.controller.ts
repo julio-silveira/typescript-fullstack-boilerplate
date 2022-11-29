@@ -11,24 +11,25 @@ const secret = process.env.JWT_SECRET || 'JWT';
 export default class UserControler {
   constructor(private userService = new UserService()) {}
 
-  
+
   public userLogin = async (req: Request, res: Response) => {
     const { username, password } =  req.body
     if(!username || !password) throw new BadRequestError("O nome de usuário/senha não podem estar em vazios")
     const user = await this.userService.getUser(username);
 
+    if(!user) throw new UnauthorizedError('Usuário não encontrado')
     const comparePassword = await compare(password,user.passwordHash);
-    
-    if(!user || !comparePassword) {
-      throw new UnauthorizedError('Usuário não existe ou senha inválida')
+
+    if(!comparePassword) {
+      throw new UnauthorizedError('Senha Incorreta')
     }
-    
+
     const token = jwt.sign({data: {username: username}},secret, {
       expiresIn: '7d',
       algorithm: 'HS256',
     });
 
-    res.status(statusCodes.OK).json({token})
+    res.status(statusCodes.OK).json({token, userId: user.id})
   }
 
   public createUser = async (req: Request, res: Response) => {

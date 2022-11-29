@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { FetchLoginOutput } from '../../@types/fetch'
 import { loginFetch } from '../../helpers/fetch'
+import { saveToken, saveUserId } from '../../helpers/localStorage'
 
 interface ILogin {
   username: string
@@ -9,6 +11,7 @@ interface ILogin {
 
 export default function LoginForm() {
   const navigate = useNavigate()
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [loginData, setLogindata] = useState<ILogin>({
     username: '',
     password: ''
@@ -21,9 +24,16 @@ export default function LoginForm() {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
-    const token = await loginFetch(loginData)
-    localStorage.setItem('token', token)
-    navigate('/tasks')
+
+    const { token, userId, message } = (await loginFetch(
+      loginData
+    )) as FetchLoginOutput
+
+    if (!message) {
+      saveToken(token)
+      saveUserId(userId)
+      navigate('/tasks')
+    } else setErrorMessage(message)
   }
 
   return (
@@ -46,6 +56,7 @@ export default function LoginForm() {
         />
       </label>
       <button type="submit">Login</button>
+      {errorMessage !== null && <p style={{ color: 'red' }}>{errorMessage}</p>}
     </form>
   )
 }

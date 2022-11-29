@@ -13,14 +13,14 @@ class ValidateJWT {
 
   public tokenAuth = async (req: Request, res: Response, next: NextFunction) => {
     const { authorization } =  req.headers
+
     const userId = Number(req.params.userId)
-    
+
     if( !authorization ) throw new NotFoundError("Token não encontrado")
- 
+
     const decoded =  jwt.verify(authorization,secret) as Token
-    console.log(decoded);
-    
-    const user = await this.userModel.findOne({where: {username: decoded.data.username}, raw: true }) 
+
+    const user = await this.userModel.findOne({where: {username: decoded.data.username}, raw: true })
 
     if(!user) throw new NotFoundError("Usuário não encontrado");
     if(user.id !== userId) throw new UnauthorizedError("Você não possui acesso a essa página");
