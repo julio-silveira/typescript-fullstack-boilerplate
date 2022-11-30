@@ -61,3 +61,32 @@ export const saveTask = async (taskData: iTaskData): Promise<string | void> => {
     console.error(error)
   }
 }
+
+export const editTask = async (taskData: iTaskData): Promise<void> => {
+  try {
+    const { id, userId, title, description } = taskData
+    const token = getToken()
+    await fetch(`http://localhost:8000/users/${userId}/tasks/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', authorization: token },
+      body: JSON.stringify({ title, description })
+    })
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export const deleteTask = async (
+  id: number | string,
+  userId: number | string
+): Promise<void> => {
+  try {
+    const token = getToken()
+    await fetch(`http://localhost:8000/users/${userId}/tasks/${id}`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json', authorization: token }
+    })
+  } catch (error) {
+    console.error(error)
+  }
+}

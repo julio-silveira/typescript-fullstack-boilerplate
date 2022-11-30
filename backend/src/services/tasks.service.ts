@@ -45,9 +45,8 @@ class TaskServices {
     return tasks as unknown as Task[]
   }
   public async findOneTask(userId: number, taskId: number): Promise<Task> {
-    const ONE: number = 1
-    const offset: number =  taskId - ONE
-    const task = await this.tasksModel.findOne({where: { userId }, limit: ONE, offset, raw: true})
+
+    const task = await this.tasksModel.findOne({where: { userId, id: taskId }, raw: true})
     if(task === null) throw new NotFoundError("Task not found!")
     return task as unknown as Task
   }

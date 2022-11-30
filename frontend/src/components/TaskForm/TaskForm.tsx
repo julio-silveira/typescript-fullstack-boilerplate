@@ -17,9 +17,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ updateList, setUpdateList }) => {
     description: ''
   })
 
-  const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = event.target
     setTaskData((prevState) => ({ ...prevState, [id]: value }))
   }
@@ -37,12 +35,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ updateList, setUpdateList }) => {
           <input onChange={handleChange} type="text" id="title"></input>
         </label>
         <label htmlFor="description">
-          <textarea
-            onChange={handleChange}
-            rows={5}
-            cols={20}
-            id="description"
-          ></textarea>
+          <input onChange={handleChange} id="description"></input>
         </label>
         <button type="submit">Salvar Tarefa</button>
       </form>

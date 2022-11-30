@@ -28,7 +28,11 @@ export default function Tasks() {
       Tasks
       <TaskForm updateList={updateList} setUpdateList={setUpdateList} />
       {tasksList.length > 0 ? (
-        <TasksList tasksList={tasksList} />
+        <TasksList
+          updateList={updateList}
+          setUpdateList={setUpdateList}
+          tasksList={tasksList}
+        />
       ) : (
         <p>Adicione uma Tarefa!</p>
       )}
