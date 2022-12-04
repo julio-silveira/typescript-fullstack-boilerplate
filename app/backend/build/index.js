@@ -13,7 +13,7 @@ const app = (0, express_1.default)();
 app.use(express_1.default.json());
 const PORT = 8000;
 const corsOptions = {
-    origin: 'http://localhost:5173/'
+    origin: 'http://localhost:3000/'
 };
 app.get('/', (req, res) => {
     res.status(statusCodes_1.default.OK).send('Express + TypeScript');
@@ -33,6 +33,7 @@ app.use((err, req, res, next) => {
             break;
         case 'UnauthorizedError':
             res.status(401).json({ message });
+            break;
         case 'ForbiddenError':
             res.status(403).json({ message });
             break;

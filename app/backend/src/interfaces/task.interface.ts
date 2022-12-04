@@ -1,8 +1,8 @@
 interface Task {
-  id?: number;
-  userId: number;
-  title: string;
-  description: string;
+  id?: number
+  userId: number
+  title: string
+  description: string
 }
 
-export default Task;
+export default Task

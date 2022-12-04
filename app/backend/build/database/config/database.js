@@ -6,6 +6,6 @@ const config = {
     database: process.env.DB_NAME || 'crud_db',
     host: process.env.DB_HOST || 'localhost',
     port: Number(process.env.DB_PORT) || 3306,
-    dialect: 'mysql',
+    dialect: 'mysql'
 };
 module.exports = config;
