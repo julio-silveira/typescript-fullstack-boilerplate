@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const TaskModel_1 = __importDefault(require("../database/models/TaskModel"));
 const restify_errors_1 = require("restify-errors");
-const properties = ['userId', 'title', 'description'];
+const properties = ['userId', 'status', 'description'];
 class TaskServices {
     constructor() {
         this.tasksModel = TaskModel_1.default;
@@ -42,6 +42,7 @@ class TaskServices {
         if (!valid) {
             return `O campo ${property} é obrigatório.`;
         }
+        ;
         [valid, property] = TaskServices.validateValues(task);
         if (!valid) {
             return `O campo ${property} não pode ser nulo ou vazio.`;
@@ -49,15 +50,21 @@ class TaskServices {
     }
     findAllTasks(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const tasks = yield this.tasksModel.findAll({ where: { userId }, raw: true });
+            const tasks = yield this.tasksModel.findAll({
+                where: { userId },
+                raw: true
+            });
             return tasks;
         });
     }
     findOneTask(userId, taskId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const task = yield this.tasksModel.findOne({ where: { userId, id: taskId }, raw: true });
+            const task = yield this.tasksModel.findOne({
+                where: { userId, id: taskId },
+                raw: true
+            });
             if (task === null)
-                throw new restify_errors_1.NotFoundError("Task not found!");
+                throw new restify_errors_1.NotFoundError('Task not found!');
             return task;
         });
     }

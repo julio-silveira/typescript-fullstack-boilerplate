@@ -1,10 +1,6 @@
 import React, { useState } from 'react'
-import { saveTask } from '../../helpers/fetch'
-
-interface ITask {
-  title: string
-  description: string
-}
+import { ITaskState } from '../../@types/taskTypes'
+import { saveTask } from '../../helpers/taskFetch'
 
 interface TaskFormProps {
   updateList: boolean
@@ -12,8 +8,8 @@ interface TaskFormProps {
 }
 
 const TaskForm: React.FC<TaskFormProps> = ({ updateList, setUpdateList }) => {
-  const [taskData, setTaskData] = useState<ITask>({
-    title: '',
+  const [taskData, setTaskData] = useState<ITaskState>({
+    status: false,
     description: ''
   })
 
@@ -31,8 +27,8 @@ const TaskForm: React.FC<TaskFormProps> = ({ updateList, setUpdateList }) => {
   return (
     <article>
       <form onSubmit={handleSubmit}>
-        <label htmlFor="title">
-          <input onChange={handleChange} type="text" id="title"></input>
+        <label htmlFor="status">
+          <input onChange={handleChange} type="text" id="status"></input>
         </label>
         <label htmlFor="description">
           <input onChange={handleChange} id="description"></input>

@@ -1,13 +1,8 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { FetchLoginOutput } from '../../@types/fetch'
-import { loginFetch, registerUser } from '../../helpers/fetch'
+import { userLogin, userRegister } from '../../helpers/userFetch'
 import { saveToken, saveUserId } from '../../helpers/localStorage'
-
-interface IForm {
-  username: string
-  password: string
-}
+import { IFetchLoginMessage, IUser, UserLogin } from '../../@types/userTypes'
 
 const FORM_INITIAL_STATE = {
   username: '',
@@ -18,7 +13,7 @@ export default function LoginForm() {
   const navigate = useNavigate()
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [register, setRegister] = useState(false)
-  const [formData, setFormData] = useState<IForm>(FORM_INITIAL_STATE)
+  const [formData, setFormData] = useState<IUser>(FORM_INITIAL_STATE)
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = event.target
@@ -28,18 +23,13 @@ export default function LoginForm() {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
     if (register) {
-      await registerUser(formData)
+      await userRegister(formData)
 
       setRegister(false)
       setFormData(FORM_INITIAL_STATE)
     } else {
-      const { token, userId, message } = (await loginFetch(
-        formData
-      )) as FetchLoginOutput
-
+      const message = (await userLogin(formData)) as string | undefined
       if (!message) {
-        saveToken(token)
-        saveUserId(userId)
         setFormData(FORM_INITIAL_STATE)
         navigate('/tasks')
       } else setErrorMessage(message)

@@ -25,7 +25,7 @@ class UserControler {
         this.userLogin = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const { username, password } = req.body;
             if (!username || !password)
-                throw new restify_errors_1.BadRequestError("O nome de usuário/senha não podem estar em vazios");
+                throw new restify_errors_1.BadRequestError('O nome de usuário/senha não podem estar em vazios');
             const user = yield this.userService.getUser(username);
             if (!user)
                 throw new restify_errors_1.UnauthorizedError('Usuário não encontrado');
@@ -35,7 +35,7 @@ class UserControler {
             }
             const token = jsonwebtoken_1.default.sign({ data: { username: username } }, secret, {
                 expiresIn: '7d',
-                algorithm: 'HS256',
+                algorithm: 'HS256'
             });
             res.status(statusCodes_1.default.OK).json({ token, userId: user.id });
         });
@@ -43,9 +43,10 @@ class UserControler {
             const { username, password } = req.body;
             const passwordHash = yield (0, bcrypt_1.hash)(password, 8);
             const user = yield this.userService.createUser({ username, passwordHash });
-            res.status(statusCodes_1.default.CREATED).json({ message: "Usuário cadastrado com sucesso", user: user.username });
+            res
+                .status(statusCodes_1.default.CREATED)
+                .json({ message: 'Usuário cadastrado com sucesso', user: user.username });
         });
     }
 }
 exports.default = UserControler;
-;

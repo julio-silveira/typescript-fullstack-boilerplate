@@ -1,16 +1,16 @@
 import React, { useState } from 'react'
-import { FetchTasksOutput } from '../../@types/fetch'
-import { deleteTask, editTask } from '../../helpers/fetch'
+import { ITaskData, ITaskState } from '../../@types/taskTypes'
+import { deleteTask, editTask } from '../../helpers/taskFetch'
 
 type TasksListsProps = {
-  tasksList: FetchTasksOutput[]
+  tasksList: ITaskData[]
   updateList: boolean
   setUpdateList: (value: boolean) => void
 }
 
 interface IOnEditTask {
   onEdit: boolean
-  task: number | null
+  task: number | boolean | null
 }
 
 const INITIAL_ON_EDIT_TASK: IOnEditTask = {
@@ -25,11 +25,24 @@ const TasksList: React.FC<TasksListsProps> = ({
 }) => {
   const [onEditTask, setOnEditTask] =
     useState<IOnEditTask>(INITIAL_ON_EDIT_TASK)
-  const [taskValues, setTaskValues] = useState({ title: '', description: '' })
+  const [taskValues, setTaskValues] = useState<ITaskState>({
+    status: false,
+    description: ''
+  })
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target
-    setTaskValues((prevState) => ({ ...prevState, [name]: value }))
+  const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, id, value, type, checked } = event.target
+    const componentId = Number(id)
+    if (type === 'checkbox' && !onEditTask.onEdit) {
+      const { id, userId, status, description } = tasksList[componentId]
+      await editTask({ id, userId, status: !status, description })
+      setUpdateList(!updateList)
+    }
+    const newValue = type === 'checkbox' ? !checked : value
+    setTaskValues((prevState) => ({
+      ...prevState,
+      [name]: newValue
+    }))
   }
 
   const handleEditBtn = async (
@@ -38,13 +51,13 @@ const TasksList: React.FC<TasksListsProps> = ({
     userId: number | string
   ) => {
     if (onEditTask.onEdit) {
-      const { title, description } = taskValues
-      await editTask({ id, userId, title, description })
+      const { status, description } = taskValues
+      await editTask({ id, userId, status, description })
       setUpdateList(!updateList)
       setOnEditTask(INITIAL_ON_EDIT_TASK)
     } else {
-      const { title, description } = tasksList[index]
-      setTaskValues({ title, description })
+      const { status, description } = tasksList[index]
+      setTaskValues({ status, description })
       setOnEditTask({ onEdit: true, task: index })
     }
   }
@@ -56,16 +69,16 @@ const TasksList: React.FC<TasksListsProps> = ({
 
   return (
     <ul>
-      {tasksList.map(({ id, userId, title, description }, index) => (
+      {tasksList.map(({ id, userId, status, description }, index) => (
         <li style={{ margin: '10px' }} key={index}>
           {onEditTask.onEdit && onEditTask.task === index ? (
             <div>
-              <label htmlFor="taskTitle">
+              <label htmlFor={`${index}`}>
                 <input
-                  id="taskTitle"
-                  name="title"
-                  value={taskValues.title}
-                  type="text"
+                  id={`${index}`}
+                  name="status"
+                  checked={status}
+                  type="checkbox"
                   onChange={handleChange}
                 />
               </label>
@@ -80,7 +93,18 @@ const TasksList: React.FC<TasksListsProps> = ({
               </label>
             </div>
           ) : (
-            <span>{`${title}:${description} `}</span>
+            <div>
+              <label htmlFor={`${index}`}>
+                <input
+                  id={`${index}`}
+                  name="status"
+                  checked={status}
+                  type="checkbox"
+                  onChange={handleChange}
+                />
+              </label>
+              <span>{description}</span>
+            </div>
           )}
           <button
             onClick={() => handleEditBtn(index, id, userId)}

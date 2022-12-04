@@ -1,47 +1,9 @@
-import {
-  FetchErrorOutput,
-  FetchLoginOutput,
-  FetchTasksOutput
-} from '../@types/fetch'
-import { ILogin } from '../@types/home'
-import { iTaskData } from '../@types/tasks'
+import { ITaskData, ITaskState, TaskOutput } from '../@types/taskTypes'
 import { getToken, getUserId } from './localStorage'
 
-export const loginFetch = async (
-  userData: ILogin
-): Promise<FetchLoginOutput | FetchErrorOutput | void> => {
-  try {
-    const response = await fetch('http://localhost:8000/users', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(userData)
-    })
-    const data = await response.json()
-    return data
-  } catch (error) {
-    console.error(error)
-  }
-}
+export const smIntToBool = (num: number | boolean): boolean => num === 1
 
-export const registerUser = async (
-  userData: ILogin
-): Promise<FetchLoginOutput | FetchErrorOutput | void> => {
-  try {
-    const response = await fetch('http://localhost:8000/users/create', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(userData)
-    })
-    const data = await response.json()
-    return data
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-export const getTasks = async (): Promise<
-  FetchTasksOutput[] | FetchErrorOutput | void
-> => {
+export const getTasks = async (): Promise<TaskOutput> => {
   try {
     const userId = getUserId()
     const token = getToken()
@@ -53,13 +15,19 @@ export const getTasks = async (): Promise<
       }
     )
     const data = await response.json()
-    return data
+
+    return data.map(
+      (task: ITaskData): TaskOutput => ({
+        ...task,
+        status: smIntToBool(task.status)
+      })
+    )
   } catch (error) {
     console.error(error)
   }
 }
 
-export const saveTask = async (taskData: iTaskData): Promise<string | void> => {
+export const saveTask = async (taskData: ITaskState): Promise<TaskOutput> => {
   try {
     const userId = getUserId()
     const token = getToken()
@@ -78,14 +46,14 @@ export const saveTask = async (taskData: iTaskData): Promise<string | void> => {
   }
 }
 
-export const editTask = async (taskData: iTaskData): Promise<void> => {
+export const editTask = async (taskData: ITaskData): Promise<void> => {
   try {
-    const { id, userId, title, description } = taskData
+    const { id, userId, status, description } = taskData
     const token = getToken()
     await fetch(`http://localhost:8000/users/${userId}/tasks/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json', authorization: token },
-      body: JSON.stringify({ title, description })
+      body: JSON.stringify({ status, description })
     })
   } catch (error) {
     console.error(error)

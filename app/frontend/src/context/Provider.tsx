@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { ITaskData } from '../@types/taskTypes'
 import AppContext from './AppContext'
 
 interface iProps {
@@ -7,9 +8,12 @@ interface iProps {
 
 const Provider: React.FC<iProps> = ({ children }) => {
   const [loading, setLoading] = useState(false)
+  const [userTasks, setUserTasks] = useState<ITaskData[]>([])
 
   return (
-    <AppContext.Provider value={{ loading, setLoading }}>
+    <AppContext.Provider
+      value={{ loading, setLoading, userTasks, setUserTasks }}
+    >
       {children}
     </AppContext.Provider>
   )

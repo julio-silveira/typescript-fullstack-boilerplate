@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const UserModel_1 = __importDefault(require("../database/models/UserModel"));
 const restify_errors_1 = require("restify-errors");
-const properties = ['username', 'passwordHash',];
+const properties = ['username', 'passwordHash'];
 class UserService {
     constructor() {
         this.usersModel = UserModel_1.default;
@@ -42,6 +42,7 @@ class UserService {
         if (!valid) {
             return `O campo ${property} é obrigatório.`;
         }
+        ;
         [valid, property] = UserService.validateValues(user);
         if (!valid) {
             return `O campo ${property} não pode ser nulo ou vazio.`;
@@ -49,7 +50,10 @@ class UserService {
     }
     getUser(username) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.usersModel.findOne({ where: { username }, raw: true });
+            const user = yield this.usersModel.findOne({
+                where: { username },
+                raw: true
+            });
             return user;
         });
     }

@@ -48,13 +48,16 @@ class ValidateJWT {
             const { authorization } = req.headers;
             const userId = Number(req.params.userId);
             if (!authorization)
-                throw new restify_errors_1.NotFoundError("Token não encontrado");
+                throw new restify_errors_1.NotFoundError('Token não encontrado');
             const decoded = jsonwebtoken_1.default.verify(authorization, secret);
-            const user = yield this.userModel.findOne({ where: { username: decoded.data.username }, raw: true });
+            const user = yield this.userModel.findOne({
+                where: { username: decoded.data.username },
+                raw: true
+            });
             if (!user)
-                throw new restify_errors_1.NotFoundError("Usuário não encontrado");
+                throw new restify_errors_1.NotFoundError('Usuário não encontrado');
             if (user.id !== userId)
-                throw new restify_errors_1.UnauthorizedError("Você não possui acesso a essa página");
+                throw new restify_errors_1.UnauthorizedError('Você não possui acesso a essa página');
             next();
         });
     }

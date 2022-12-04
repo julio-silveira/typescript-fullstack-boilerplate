@@ -16,16 +16,16 @@ Users.init({
     },
     username: {
         type: (0, sequelize_1.STRING)(30),
-        allowNull: false,
+        allowNull: false
     },
     passwordHash: {
         type: (0, sequelize_1.STRING)(30),
-        allowNull: false,
-    },
+        allowNull: false
+    }
 }, {
     underscored: true,
     sequelize: _1.default,
     modelName: 'users',
-    timestamps: false,
+    timestamps: false
 });
 exports.default = Users;

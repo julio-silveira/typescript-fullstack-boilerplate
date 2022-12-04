@@ -32,7 +32,9 @@ class TaskControler {
             const userId = Number(req.params.userId);
             const tasksData = req.body;
             yield this.taskServices.create(Object.assign({ userId }, tasksData));
-            res.status(statusCodes_1.default.CREATED).json({ message: "Tarefa criada com sucesso!" });
+            res
+                .status(statusCodes_1.default.CREATED)
+                .json({ message: 'Tarefa criada com sucesso!' });
         });
         this.update = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const userId = Number(req.params.userId);
@@ -50,4 +52,3 @@ class TaskControler {
     }
 }
 exports.default = TaskControler;
-;

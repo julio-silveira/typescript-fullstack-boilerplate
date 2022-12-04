@@ -2,7 +2,7 @@ import Task from '../interfaces/task.interface'
 import Tasks from '../database/models/TaskModel'
 import { BadRequestError, NotFoundError } from 'restify-errors'
 
-const properties = ['userId', 'title', 'description']
+const properties = ['userId', 'status', 'description']
 
 class TaskServices {
   public tasksModel = Tasks
@@ -20,7 +20,7 @@ class TaskServices {
     const entries = Object.entries(task)
     for (let i = 0; i < entries.length; i += 1) {
       const [property, value] = entries[i]
-      if (!value) {
+      if (!value && property !== properties[1]) {
         return [false, property]
       }
     }

@@ -12,9 +12,6 @@ const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 const PORT = 8000;
-const corsOptions = {
-    origin: 'http://localhost:3000/'
-};
 app.get('/', (req, res) => {
     res.status(statusCodes_1.default.OK).send('Express + TypeScript');
 });

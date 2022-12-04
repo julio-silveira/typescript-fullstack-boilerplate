@@ -7,17 +7,17 @@ module.exports = {
     await queryInterface.bulkInsert('tasks', [
       {
         user_id: 1,
-        title: 'text01',
+        status: false,
         description: 'task01'
       },
       {
         user_id: 1,
-        title: 'text02',
+        status: true,
         description: 'task02'
       },
       {
         user_id: 2,
-        title: 'text03',
+        status: false,
         description: 'task03'
       }
     ])

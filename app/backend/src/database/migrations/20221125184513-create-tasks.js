@@ -20,10 +20,11 @@ module.exports = {
         },
         field: 'user_id'
       },
-      title: {
+      status: {
         allowNull: false,
-        type: Sequelize.STRING(100),
-        field: 'title'
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+        field: 'status'
       },
       description: {
         allowNull: false,
