@@ -55,9 +55,7 @@ class TaskServices {
     }
     findOneTask(userId, taskId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const ONE = 1;
-            const offset = taskId - ONE;
-            const task = yield this.tasksModel.findOne({ where: { userId }, limit: ONE, offset, raw: true });
+            const task = yield this.tasksModel.findOne({ where: { userId, id: taskId }, raw: true });
             if (task === null)
                 throw new restify_errors_1.NotFoundError("Task not found!");
             return task;

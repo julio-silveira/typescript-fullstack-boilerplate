@@ -16,6 +16,9 @@ const statusCodes_1 = __importDefault(require("../statusCodes"));
 const users_service_1 = __importDefault(require("../services/users.service"));
 const restify_errors_1 = require("restify-errors");
 const bcrypt_1 = require("bcrypt");
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+require("dotenv/config");
+const secret = process.env.JWT_SECRET || 'JWT';
 class UserControler {
     constructor(userService = new users_service_1.default()) {
         this.userService = userService;
@@ -24,19 +27,23 @@ class UserControler {
             if (!username || !password)
                 throw new restify_errors_1.BadRequestError("O nome de usuário/senha não podem estar em vazios");
             const user = yield this.userService.getUser(username);
-            const hashedPassword = yield (0, bcrypt_1.hash)(password, 8);
-            if (!user || user.passwordHash !== hashedPassword) {
-                throw new restify_errors_1.BadRequestError('Usuário não existe ou senha inválida');
+            if (!user)
+                throw new restify_errors_1.UnauthorizedError('Usuário não encontrado');
+            const comparePassword = yield (0, bcrypt_1.compare)(password, user.passwordHash);
+            if (!comparePassword) {
+                throw new restify_errors_1.UnauthorizedError('Senha Incorreta');
             }
-            else {
-                res.status(statusCodes_1.default.OK).json({ message: 'Login Efetuado com sucesso', user: user.username });
-            }
+            const token = jsonwebtoken_1.default.sign({ data: { username: username } }, secret, {
+                expiresIn: '7d',
+                algorithm: 'HS256',
+            });
+            res.status(statusCodes_1.default.OK).json({ token, userId: user.id });
         });
         this.createUser = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const { username, password } = req.body;
             const passwordHash = yield (0, bcrypt_1.hash)(password, 8);
             const user = yield this.userService.createUser({ username, passwordHash });
-            res.status(statusCodes_1.default.CREATED).json(user);
+            res.status(statusCodes_1.default.CREATED).json({ message: "Usuário cadastrado com sucesso", user: user.username });
         });
     }
 }

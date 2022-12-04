@@ -23,6 +23,22 @@ export const loginFetch = async (
   }
 }
 
+export const registerUser = async (
+  userData: ILogin
+): Promise<FetchLoginOutput | FetchErrorOutput | void> => {
+  try {
+    const response = await fetch('http://localhost:8000/users/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(userData)
+    })
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export const getTasks = async (): Promise<
   FetchTasksOutput[] | FetchErrorOutput | void
 > => {

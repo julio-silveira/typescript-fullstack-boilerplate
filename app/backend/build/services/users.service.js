@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const UserModel_1 = __importDefault(require("../database/models/UserModel"));
 const restify_errors_1 = require("restify-errors");
-const properties = ['username', 'password',];
+const properties = ['username', 'passwordHash',];
 class UserService {
     constructor() {
         this.usersModel = UserModel_1.default;

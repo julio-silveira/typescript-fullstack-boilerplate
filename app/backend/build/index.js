@@ -8,12 +8,17 @@ const statusCodes_1 = __importDefault(require("./statusCodes"));
 require("express-async-errors");
 const user_routes_1 = __importDefault(require("./routes/user.routes"));
 const tasks_routes_1 = __importDefault(require("./routes/tasks.routes"));
+const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 const PORT = 8000;
+const corsOptions = {
+    origin: 'http://localhost:5173/'
+};
 app.get('/', (req, res) => {
     res.status(statusCodes_1.default.OK).send('Express + TypeScript');
 });
+app.use((0, cors_1.default)());
 app.use(user_routes_1.default);
 app.use(tasks_routes_1.default);
 app.use((err, req, res, next) => {
@@ -25,6 +30,11 @@ app.use((err, req, res, next) => {
             break;
         case 'ValidationError':
             res.status(400).json({ message: details[0].message });
+            break;
+        case 'UnauthorizedError':
+            res.status(401).json({ message });
+        case 'ForbiddenError':
+            res.status(403).json({ message });
             break;
         case 'NotFoundError':
             res.status(404).json({ message });
