@@ -1,7 +1,7 @@
 export interface ITaskData {
   id: string | number
   userId: string | number
-  status: boolean | number
+  status: boolean
   description: string
 }
 

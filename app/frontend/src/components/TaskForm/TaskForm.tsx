@@ -1,13 +1,11 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
+import { ContextType } from '../../@types/ContextTypes'
 import { ITaskState } from '../../@types/taskTypes'
+import AppContext from '../../context/AppContext'
 import { saveTask } from '../../helpers/taskFetch'
 
-interface TaskFormProps {
-  updateList: boolean
-  setUpdateList: (value: boolean) => void
-}
-
-const TaskForm: React.FC<TaskFormProps> = ({ updateList, setUpdateList }) => {
+const TaskForm: React.FC = () => {
+  const { updateTasks } = useContext(AppContext) as ContextType
   const [taskData, setTaskData] = useState<ITaskState>({
     status: false,
     description: ''
@@ -21,15 +19,12 @@ const TaskForm: React.FC<TaskFormProps> = ({ updateList, setUpdateList }) => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
     const message = await saveTask(taskData)
-    setUpdateList(!updateList)
+    updateTasks()
     console.log(message)
   }
   return (
     <article>
       <form onSubmit={handleSubmit}>
-        <label htmlFor="status">
-          <input onChange={handleChange} type="text" id="status"></input>
-        </label>
         <label htmlFor="description">
           <input onChange={handleChange} id="description"></input>
         </label>

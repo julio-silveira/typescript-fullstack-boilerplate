@@ -32,7 +32,7 @@ export default class TaskControler {
     const taskId = Number(req.params.taskId)
     const tasksData = req.body
     await this.taskServices.update(userId, taskId, { userId, ...tasksData })
-    res.status(statusCodes.NO_CONTENT).end()
+    res.status(statusCodes.OK).json('message: Tarefa editada com sucesso')
   }
 
   public remove = async (req: Request, res: Response) => {

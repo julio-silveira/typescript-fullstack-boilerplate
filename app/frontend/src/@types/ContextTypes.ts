@@ -5,4 +5,5 @@ export type ContextType = {
   setLoading: (loading: boolean) => void
   userTasks: ITaskData[]
   setUserTasks: (userTasks: ITaskData[]) => void
+  updateTasks: () => void
 }

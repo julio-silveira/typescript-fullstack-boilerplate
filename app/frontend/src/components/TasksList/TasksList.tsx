@@ -1,16 +1,12 @@
-import React, { useState } from 'react'
-import { ITaskData, ITaskState } from '../../@types/taskTypes'
+import React, { useContext, useState } from 'react'
+import { ContextType } from '../../@types/ContextTypes'
+import { ITaskState } from '../../@types/taskTypes'
+import AppContext from '../../context/AppContext'
 import { deleteTask, editTask } from '../../helpers/taskFetch'
-
-type TasksListsProps = {
-  tasksList: ITaskData[]
-  updateList: boolean
-  setUpdateList: (value: boolean) => void
-}
 
 interface IOnEditTask {
   onEdit: boolean
-  task: number | boolean | null
+  task: number | null
 }
 
 const INITIAL_ON_EDIT_TASK: IOnEditTask = {
@@ -18,11 +14,9 @@ const INITIAL_ON_EDIT_TASK: IOnEditTask = {
   task: null
 }
 
-const TasksList: React.FC<TasksListsProps> = ({
-  tasksList,
-  updateList,
-  setUpdateList
-}) => {
+const TasksList: React.FC = () => {
+  const { userTasks, updateTasks } = useContext(AppContext) as ContextType
+
   const [onEditTask, setOnEditTask] =
     useState<IOnEditTask>(INITIAL_ON_EDIT_TASK)
   const [taskValues, setTaskValues] = useState<ITaskState>({
@@ -31,18 +25,23 @@ const TasksList: React.FC<TasksListsProps> = ({
   })
 
   const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, id, value, type, checked } = event.target
-    const componentId = Number(id)
-    if (type === 'checkbox' && !onEditTask.onEdit) {
-      const { id, userId, status, description } = tasksList[componentId]
-      await editTask({ id, userId, status: !status, description })
-      setUpdateList(!updateList)
-    }
+    const { name, value, type, checked } = event.target
+
     const newValue = type === 'checkbox' ? !checked : value
     setTaskValues((prevState) => ({
       ...prevState,
       [name]: newValue
     }))
+  }
+
+  const handleCheck = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, type } = event.target
+    const componentId = Number(id)
+    if (type === 'checkbox' && !onEditTask.onEdit) {
+      const { id, userId, status, description } = userTasks[componentId]
+      await editTask({ id, userId, status: !status, description })
+      updateTasks()
+    }
   }
 
   const handleEditBtn = async (
@@ -53,10 +52,10 @@ const TasksList: React.FC<TasksListsProps> = ({
     if (onEditTask.onEdit) {
       const { status, description } = taskValues
       await editTask({ id, userId, status, description })
-      setUpdateList(!updateList)
+      updateTasks()
       setOnEditTask(INITIAL_ON_EDIT_TASK)
     } else {
-      const { status, description } = tasksList[index]
+      const { status, description } = userTasks[index]
       setTaskValues({ status, description })
       setOnEditTask({ onEdit: true, task: index })
     }
@@ -64,12 +63,12 @@ const TasksList: React.FC<TasksListsProps> = ({
 
   const handleDelBtn = async (id: number | string, userId: number | string) => {
     await deleteTask(id, userId)
-    setUpdateList(!updateList)
+    updateTasks()
   }
 
   return (
     <ul>
-      {tasksList.map(({ id, userId, status, description }, index) => (
+      {userTasks.map(({ id, userId, status, description }, index) => (
         <li style={{ margin: '10px' }} key={index}>
           {onEditTask.onEdit && onEditTask.task === index ? (
             <div>
@@ -79,7 +78,7 @@ const TasksList: React.FC<TasksListsProps> = ({
                   name="status"
                   checked={status}
                   type="checkbox"
-                  onChange={handleChange}
+                  onChange={handleCheck}
                 />
               </label>
               <label htmlFor="taskDescription">
@@ -100,7 +99,7 @@ const TasksList: React.FC<TasksListsProps> = ({
                   name="status"
                   checked={status}
                   type="checkbox"
-                  onChange={handleChange}
+                  onChange={handleCheck}
                 />
               </label>
               <span>{description}</span>
