@@ -1,11 +1,14 @@
 import React, { useContext, useState } from 'react'
 import { ContextType } from '../../@types/ContextTypes'
 import { ITaskState } from '../../@types/taskTypes'
+import { IFetchLoginMessage } from '../../@types/userTypes'
 import AppContext from '../../context/AppContext'
 import { saveTask } from '../../helpers/taskFetch'
 
 const TaskForm: React.FC = () => {
-  const { updateTasks } = useContext(AppContext) as ContextType
+  const { updateTasks, openModalWithContent } = useContext(
+    AppContext
+  ) as ContextType
   const [taskData, setTaskData] = useState<ITaskState>({
     status: false,
     description: ''
@@ -18,9 +21,11 @@ const TaskForm: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
-    const message = await saveTask(taskData)
+    const { message } = (await saveTask(taskData)) as IFetchLoginMessage
     updateTasks()
-    console.log(message)
+    if (message !== undefined) {
+      openModalWithContent(message)
+    }
   }
   return (
     <article>

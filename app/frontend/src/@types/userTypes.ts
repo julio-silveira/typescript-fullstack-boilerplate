@@ -10,6 +10,8 @@ export interface IFetchLoginSucess {
 
 export interface IFetchLoginMessage {
   message: string | undefined
+  status: number | undefined
+  statusText: string | undefined
 }
 
 export type UserLogin = IFetchLoginMessage | void

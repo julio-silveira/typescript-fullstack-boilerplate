@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react'
 import { ContextType } from '../../@types/ContextTypes'
 import { ITaskState } from '../../@types/taskTypes'
+import { IFetchLoginMessage } from '../../@types/userTypes'
 import AppContext from '../../context/AppContext'
 import { deleteTask, editTask } from '../../helpers/taskFetch'
 
@@ -15,7 +16,9 @@ const INITIAL_ON_EDIT_TASK: IOnEditTask = {
 }
 
 const TasksList: React.FC = () => {
-  const { userTasks, updateTasks } = useContext(AppContext) as ContextType
+  const { userTasks, updateTasks, openModalWithContent } = useContext(
+    AppContext
+  ) as ContextType
 
   const [onEditTask, setOnEditTask] =
     useState<IOnEditTask>(INITIAL_ON_EDIT_TASK)
@@ -51,9 +54,17 @@ const TasksList: React.FC = () => {
   ) => {
     if (onEditTask.onEdit) {
       const { status, description } = taskValues
-      await editTask({ id, userId, status, description })
+      const { message } = (await editTask({
+        id,
+        userId,
+        status,
+        description
+      })) as IFetchLoginMessage
       updateTasks()
       setOnEditTask(INITIAL_ON_EDIT_TASK)
+      if (message !== undefined) {
+        openModalWithContent(message)
+      }
     } else {
       const { status, description } = userTasks[index]
       setTaskValues({ status, description })
@@ -62,8 +73,11 @@ const TasksList: React.FC = () => {
   }
 
   const handleDelBtn = async (id: number | string, userId: number | string) => {
-    await deleteTask(id, userId)
+    const { message } = (await deleteTask(id, userId)) as IFetchLoginMessage
     updateTasks()
+    if (message !== undefined) {
+      openModalWithContent(message)
+    }
   }
 
   return (

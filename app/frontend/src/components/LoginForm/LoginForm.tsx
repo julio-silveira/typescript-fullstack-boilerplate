@@ -1,8 +1,11 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { userLogin, userRegister } from '../../helpers/userFetch'
-import { saveToken, saveUserId } from '../../helpers/localStorage'
-import { IFetchLoginMessage, IUser, UserLogin } from '../../@types/userTypes'
+import { IUser } from '../../@types/userTypes'
+import AppContext from '../../context/AppContext'
+import { ContextType } from '../../@types/ContextTypes'
+import { Modal } from '../Modal'
+import { IFetchLoginMessage } from '../../@types/taskTypes'
 
 const FORM_INITIAL_STATE = {
   username: '',
@@ -10,8 +13,11 @@ const FORM_INITIAL_STATE = {
 }
 
 export default function LoginForm() {
+  const { openModalWithContent, isModalOpen } = useContext(
+    AppContext
+  ) as ContextType
+
   const navigate = useNavigate()
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [register, setRegister] = useState(false)
   const [formData, setFormData] = useState<IUser>(FORM_INITIAL_STATE)
 
@@ -23,16 +29,26 @@ export default function LoginForm() {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
     if (register) {
-      await userRegister(formData)
+      const { message, status } = (await userRegister(
+        formData
+      )) as IFetchLoginMessage
+      console.log(status)
 
-      setRegister(false)
-      setFormData(FORM_INITIAL_STATE)
+      if (status === 201 && message !== undefined) {
+        openModalWithContent(message)
+        setRegister(false)
+        setFormData(FORM_INITIAL_STATE)
+      } else if (message !== undefined) {
+        openModalWithContent(message)
+      }
     } else {
-      const message = (await userLogin(formData)) as string | undefined
+      const { message } = (await userLogin(formData)) as IFetchLoginMessage
       if (!message) {
         setFormData(FORM_INITIAL_STATE)
         navigate('/tasks')
-      } else setErrorMessage(message)
+      } else {
+        openModalWithContent(message)
+      }
     }
   }
 
@@ -78,8 +94,7 @@ export default function LoginForm() {
           </span>
         </section>
       )}
-
-      {errorMessage !== null && <p style={{ color: 'red' }}>{errorMessage}</p>}
+      {isModalOpen && <Modal />}
     </form>
   )
 }

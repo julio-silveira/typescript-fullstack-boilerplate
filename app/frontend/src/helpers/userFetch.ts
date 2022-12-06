@@ -12,7 +12,7 @@ export const userLogin = async (userData: IUser): Promise<UserLogin> => {
     saveToken(token)
     saveUserId(userId)
 
-    return message
+    return { message, status: response.status, statusText: response.statusText }
   } catch (error) {
     console.error(error)
   }
@@ -25,8 +25,10 @@ export const userRegister = async (userData: IUser): Promise<UserLogin> => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(userData)
     })
+    console.log(response.status)
+
     const { message } = await response.json()
-    return message
+    return { message, status: response.status, statusText: response.statusText }
   } catch (error) {
     console.error(error)
   }

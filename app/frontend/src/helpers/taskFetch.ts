@@ -40,21 +40,28 @@ export const saveTask = async (taskData: ITaskState): Promise<TaskOutput> => {
       }
     )
     const { message } = await response.json()
-    return message
+    return { message, status: response.status, statusText: response.statusText }
   } catch (error) {
     console.error(error)
   }
 }
 
-export const editTask = async (taskData: ITaskData): Promise<void> => {
+export const editTask = async (taskData: ITaskData): Promise<TaskOutput> => {
   try {
-    const { id, userId, status, description } = taskData
     const token = getToken()
-    await fetch(`http://localhost:8000/users/${userId}/tasks/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json', authorization: token },
-      body: JSON.stringify({ status, description })
-    })
+    const response = await fetch(
+      `http://localhost:8000/users/${taskData.userId}/tasks/${taskData.id}`,
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', authorization: token },
+        body: JSON.stringify({
+          status: taskData.status,
+          description: taskData.description
+        })
+      }
+    )
+    const { message } = await response.json()
+    return { message, status: response.status, statusText: response.statusText }
   } catch (error) {
     console.error(error)
   }
@@ -63,13 +70,18 @@ export const editTask = async (taskData: ITaskData): Promise<void> => {
 export const deleteTask = async (
   id: number | string,
   userId: number | string
-): Promise<void> => {
+): Promise<TaskOutput> => {
   try {
     const token = getToken()
-    await fetch(`http://localhost:8000/users/${userId}/tasks/${id}`, {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json', authorization: token }
-    })
+    const response = await fetch(
+      `http://localhost:8000/users/${userId}/tasks/${id}`,
+      {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json', authorization: token }
+      }
+    )
+    const { message } = await response.json()
+    return { message, status: response.status, statusText: response.statusText }
   } catch (error) {
     console.error(error)
   }

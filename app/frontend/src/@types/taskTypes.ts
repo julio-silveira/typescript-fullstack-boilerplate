@@ -12,6 +12,8 @@ export interface ITaskState {
 
 export interface IFetchLoginMessage {
   message: string | undefined
+  status: number | undefined
+  statusText: string | undefined
 }
 
 export type TaskOutput = ITaskData[] | ITaskData | IFetchLoginMessage | void

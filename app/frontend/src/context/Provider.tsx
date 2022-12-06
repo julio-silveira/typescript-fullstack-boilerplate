@@ -10,6 +10,8 @@ interface iProps {
 const Provider: React.FC<iProps> = ({ children }) => {
   const [loading, setLoading] = useState(true)
   const [userTasks, setUserTasks] = useState<ITaskData[]>([])
+  const [modalContent, setModalContent] = useState<string>('')
+  const [isModalOpen, setModalOpen] = useState<boolean>(false)
 
   const updateTasks = useCallback(async () => {
     setLoading(true)
@@ -31,6 +33,12 @@ const Provider: React.FC<iProps> = ({ children }) => {
     fetchtasks()
   }, [updateTasks])
 
+  const closeModal = () => setModalOpen(false)
+  const openModalWithContent = (content: string): void => {
+    setModalContent(content)
+    setModalOpen(true)
+  }
+
   return (
     <AppContext.Provider
       value={{
@@ -38,7 +46,13 @@ const Provider: React.FC<iProps> = ({ children }) => {
         setLoading,
         userTasks,
         setUserTasks,
-        updateTasks
+        updateTasks,
+        modalContent,
+        setModalContent,
+        isModalOpen,
+        setModalOpen,
+        closeModal,
+        openModalWithContent
       }}
     >
       {children}
