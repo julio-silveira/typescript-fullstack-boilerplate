@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext } from 'react'
 import { ContextType } from '../../@types/ContextTypes'
+import { Loading } from '../../components/Loading'
 import { Modal } from '../../components/Modal'
 import { TaskForm } from '../../components/TaskForm'
 import { TasksList } from '../../components/TasksList'
@@ -13,16 +14,16 @@ export default function Tasks() {
 
   return (
     <main>
+      <h1>Tasks</h1>
+      <TaskForm />
       {loading ? (
-        <p>Carregando...</p>
+        <Loading />
+      ) : userTasks.length > 0 ? (
+        <TasksList />
       ) : (
-        <div>
-          Tasks
-          <TaskForm />
-          {userTasks.length > 0 ? <TasksList /> : <p>Adicione uma Tarefa!</p>}
-          {isModalOpen && <Modal />}
-        </div>
+        <p>Adicione uma Tarefa!</p>
       )}
+      {isModalOpen && <Modal />}
     </main>
   )
 }
