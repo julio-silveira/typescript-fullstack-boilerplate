@@ -25,7 +25,6 @@ export const userRegister = async (userData: IUser): Promise<UserLogin> => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(userData)
     })
-    console.log(response.status)
 
     const { message } = await response.json()
     return { message, status: response.status, statusText: response.statusText }

@@ -36,6 +36,8 @@ export default class UserControler {
 
   public createUser = async (req: Request, res: Response) => {
     const { username, password } = req.body
+    if (password === '')
+      throw new BadRequestError('O campo de senha não pode estar vazio')
     const passwordHash = await hash(password, 8)
     await this.userService.createUser({ username, passwordHash })
     res

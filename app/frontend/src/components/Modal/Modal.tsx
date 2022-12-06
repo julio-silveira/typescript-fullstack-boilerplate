@@ -7,7 +7,7 @@ const Modal = () => {
 
   useEffect(() => {
     setTimeout(() => closeModal(), 2000)
-  }, [])
+  }, [closeModal])
 
   return (
     <article>
