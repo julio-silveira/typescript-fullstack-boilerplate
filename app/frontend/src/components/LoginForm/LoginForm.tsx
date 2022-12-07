@@ -4,7 +4,6 @@ import { userLogin, userRegister } from '../../helpers/userFetch'
 import { IUser } from '../../@types/userTypes'
 import AppContext from '../../context/AppContext'
 import { ContextType } from '../../@types/ContextTypes'
-import { Modal } from '../Modal'
 import { IFetchLoginMessage } from '../../@types/taskTypes'
 
 const FORM_INITIAL_STATE = {
@@ -13,9 +12,7 @@ const FORM_INITIAL_STATE = {
 }
 
 export default function LoginForm() {
-  const { openModalWithContent, isModalOpen } = useContext(
-    AppContext
-  ) as ContextType
+  const { openModalWithContent } = useContext(AppContext) as ContextType
 
   const navigate = useNavigate()
   const [isRegister, setIsRegister] = useState(false)
@@ -97,7 +94,6 @@ export default function LoginForm() {
           </span>
         </section>
       )}
-      {isModalOpen && <Modal />}
     </form>
   )
 }

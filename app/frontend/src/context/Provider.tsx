@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { ITaskData } from '../@types/taskTypes'
 import { getTasks } from '../helpers/taskFetch'
 import AppContext from './AppContext'
@@ -8,6 +9,7 @@ interface iProps {
 }
 
 const Provider: React.FC<iProps> = ({ children }) => {
+  const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
   const [userTasks, setUserTasks] = useState<ITaskData[]>([])
   const [modalContent, setModalContent] = useState<string>('')
@@ -21,17 +23,14 @@ const Provider: React.FC<iProps> = ({ children }) => {
       const tasks = (await getTasks()) as ITaskData[]
 
       setUserTasks(tasks)
+    } else {
+      navigate('/')
+      openModalWithContent(
+        'Erro de autenticação, por favor, faça login novamente'
+      )
     }
     setLoading(false)
   }, [])
-
-  useEffect((): void => {
-    const fetchtasks = async () => {
-      await updateTasks()
-    }
-
-    fetchtasks()
-  }, [updateTasks])
 
   const closeModal = () => setModalOpen(false)
   const openModalWithContent = (content: string): void => {

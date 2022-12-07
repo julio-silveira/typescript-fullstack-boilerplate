@@ -6,7 +6,8 @@ const Modal = () => {
   const { modalContent, closeModal } = useContext(AppContext) as ContextType
 
   useEffect(() => {
-    setTimeout(() => closeModal(), 2000)
+    const selfClose = setTimeout(() => closeModal(), 5000)
+    return () => clearTimeout(selfClose)
   }, [closeModal])
 
   return (
